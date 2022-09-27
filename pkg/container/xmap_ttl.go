@@ -37,7 +37,7 @@ func (m *TTLMap) Load(key interface{}) (value interface{}, ok bool) {
 		i, ok := m.dirty[key]
 		return i, ok
 	}
-	return t, ok
+	return nil, ok
 }
 
 func (m *TTLMap) Get(key interface{}) (interface{}, error) {
@@ -52,7 +52,7 @@ func (m *TTLMap) Get(key interface{}) (interface{}, error) {
 		i, _ := m.dirty[key]
 		return i, nil
 	}
-	return t, errors.New("data is timeout")
+	return nil, errors.New("data is timeout")
 }
 
 func (m *TTLMap) Store(key, value interface{}, ttl time.Duration) {

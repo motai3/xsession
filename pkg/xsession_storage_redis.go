@@ -1,4 +1,4 @@
-package pkg
+package xsession
 
 import (
 	"context"
@@ -82,20 +82,21 @@ func (s *StorageRedisHashTable) RemoveAll(ctx context.Context, id string) error 
 	return err
 }
 
-func (s *StorageRedisHashTable) GetSession(ctx context.Context, id string, ttl time.Duration, data *sync.Map) (res *sync.Map, err error) {
+func (s *StorageRedisHashTable) GetSession(ctx context.Context, id string, ttl time.Duration, data *sync.Map) (*sync.Map, error) {
 	fmt.Sprintf("StorageRedis.GetSession: %s, %v", id, ttl)
 	redisData, err := s.GetMap(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 	if redisData == nil {
-		return res, err
+		return nil, err
 	}
+	var newData sync.Map
 	for k, v := range redisData {
-		data.Store(k, v)
+		newData.Store(k, v)
 	}
 
-	return data, err
+	return &newData, err
 }
 
 func (s *StorageRedisHashTable) SetSession(ctx context.Context, id string, data *sync.Map, ttl time.Duration) error {

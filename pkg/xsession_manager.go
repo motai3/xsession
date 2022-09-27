@@ -1,4 +1,4 @@
-package pkg
+package xsession
 
 import (
 	"context"
@@ -15,7 +15,7 @@ type Manager struct {
 	sessionData *container.TTLMap
 }
 
-func Mew(ttl time.Duration, storage ...Storage) *Manager {
+func New(ttl time.Duration, storage ...Storage) *Manager {
 	m := &Manager{
 		ttl:         ttl,
 		sessionData: container.NewTTLMap(),
@@ -33,9 +33,11 @@ func (m *Manager) New(ctx context.Context, sessionId ...string) *Session {
 	if len(sessionId) > 0 && sessionId[0] != "" {
 		id = sessionId[0]
 	}
+	var s *sync.Map
 	return &Session{
 		id:      id,
 		ctx:     ctx,
+		data:    s,
 		manager: m,
 	}
 }

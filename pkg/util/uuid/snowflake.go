@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"net"
+	"strconv"
 	"sync/atomic"
 	"time"
 )
@@ -45,7 +46,7 @@ func NextID() int64 {
 
 func NextStringId() string {
 	id := NextID()
-	return string(id)
+	return strconv.FormatInt(id, 10)
 }
 
 func getNewestTimestamp() uint64 {

@@ -1,4 +1,4 @@
-package pkg
+package xsession
 
 import (
 	"context"
@@ -26,31 +26,38 @@ func (s *Session) init() {
 	if s.id != "" {
 		if r, _ := s.manager.sessionData.Get(s.id); r != nil {
 			s.data = r.(*sync.Map)
-			fmt.Printf("session init data : %s", s.data)
 		}
 		if s.manager.storage != nil {
 			if s.data, err = s.manager.storage.GetSession(s.ctx, s.id, s.manager.ttl, s.data); err != nil && err != ErrorDisabled {
-				fmt.Errorf("session restoring failed for id '%s': %v", s.id, err)
+				//fmt.Errorf("session restoring failed for id '%s': %v", s.id, err)
 			}
 		}
 	}
 	if s.id == "" && s.idFunc != nil {
 		s.id = s.idFunc(s.manager.ttl)
+		s.id = NewSessionId()
+		var m sync.Map
+		s.data = &m
 	}
 	if s.id == "" {
 		s.id, err = s.manager.storage.New(s.ctx, s.manager.ttl)
 		if err != nil && err != ErrorDisabled {
 			fmt.Errorf("create session id failed")
 		}
+		s.id = NewSessionId()
+		var m sync.Map
+		s.data = &m
 	}
 	if s.id == "" {
 		s.id = NewSessionId()
+		var m sync.Map
+		s.data = &m
 	}
 	s.start = true
 }
 
 func (s *Session) Close() {
-	if s.start && s.id != "" {
+	if s.start && s.id != "" && s.data != nil {
 		size := 0
 		s.data.Range(func(key, value interface{}) bool {
 			size++
@@ -74,6 +81,9 @@ func (s *Session) Close() {
 
 func (s *Session) Set(key string, value interface{}) error {
 	s.init()
+	//var syncMap sync.Map
+	//syncMap.Store(key, value)
+	//s.data = &syncMap
 	if err := s.manager.storage.Set(s.ctx, s.id, key, value, s.manager.ttl); err != nil {
 		if err == ErrorDisabled {
 			s.data.Store(key, value)
@@ -82,6 +92,7 @@ func (s *Session) Set(key string, value interface{}) error {
 		}
 	}
 	s.dirty = true
+	s.manager.sessionData.Store(s.id, s.data, s.manager.ttl)
 	return nil
 }
 
@@ -91,6 +102,11 @@ func (s *Session) Sets(data map[string]interface{}) error {
 
 func (s *Session) SetMap(data map[string]interface{}) error {
 	s.init()
+	//var syncMap sync.Map
+	//for k, v := range data {
+	//	syncMap.Store(k, v)
+	//}
+	//s.data = &syncMap
 	if err := s.manager.storage.SetMap(s.ctx, s.id, data, s.manager.ttl); err != nil {
 		if err == ErrorDisabled {
 			for k, v := range data {
@@ -101,6 +117,7 @@ func (s *Session) SetMap(data map[string]interface{}) error {
 		}
 	}
 	s.dirty = true
+	s.manager.sessionData.Store(s.id, s.data, s.manager.ttl)
 	return nil
 }
 
