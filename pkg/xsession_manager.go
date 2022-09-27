@@ -23,7 +23,7 @@ func Mew(ttl time.Duration, storage ...Storage) *Manager {
 	if len(storage) > 0 && storage != nil {
 		m.storage = storage[0]
 	} else {
-		m.storage = NewStorageFile()
+		m.storage = NewStorageMemory()
 	}
 	return m
 }

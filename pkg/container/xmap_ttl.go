@@ -1,6 +1,7 @@
 package container
 
 import (
+	"errors"
 	"sync"
 	"time"
 )
@@ -24,7 +25,7 @@ func NewTTLMap() *TTLMap {
 	}
 }
 
-func (m *TTLMap) load(key interface{}) (value interface{}, ok bool) {
+func (m *TTLMap) Load(key interface{}) (value interface{}, ok bool) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	t, ok := m.ttlDirty[key]
@@ -37,6 +38,21 @@ func (m *TTLMap) load(key interface{}) (value interface{}, ok bool) {
 		return i, ok
 	}
 	return t, ok
+}
+
+func (m *TTLMap) Get(key interface{}) (interface{}, error) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	t, ok := m.ttlDirty[key]
+	if ok {
+		if t.Before(time.Now()) {
+			delete(m.ttlDirty, key)
+			delete(m.dirty, key)
+		}
+		i, _ := m.dirty[key]
+		return i, nil
+	}
+	return t, errors.New("data is timeout")
 }
 
 func (m *TTLMap) Store(key, value interface{}, ttl time.Duration) {
