@@ -1,4 +1,4 @@
-module xsession
+module github.com/motai3/xsession
 
 go 1.16
 
