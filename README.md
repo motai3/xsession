@@ -12,8 +12,8 @@ package main
 import (
    "github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
-	xsession "xsession/pkg"
-	xhttp "xsession/pkg/http"
+	"github.com/motai3/xsession/pkg"
+	xhttp "github.com/motai3/xsession/pkg/http"
 )
 
 func main() {
@@ -47,8 +47,8 @@ package main
 import (
    "github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
-	xsession "xsession/pkg"
-	xhttp "xsession/pkg/http"
+	"github.com/motai3/xsession/pkg"
+	xhttp "github.com/motai3/xsession/pkg/http"
 )
 
 func main() {

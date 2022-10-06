@@ -3,12 +3,12 @@ package xsession_test
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
+	xsession "github.com/motai3/xsession/pkg"
+	xhttp "github.com/motai3/xsession/pkg/http"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"net/http"
 	"testing"
-	xsession "xsession/pkg"
-	xhttp "xsession/pkg/http"
 )
 
 func Test_server(t *testing.T) {

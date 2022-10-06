@@ -2,8 +2,8 @@ package xhttp
 
 import (
 	"github.com/gorilla/context"
+	xsession "github.com/motai3/xsession/pkg"
 	"time"
-	xsession "xsession/pkg"
 
 	"github.com/gin-gonic/gin"
 )

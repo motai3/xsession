@@ -2,9 +2,9 @@ package xsession
 
 import (
 	"context"
+	"github.com/motai3/xsession/pkg/container"
 	"sync"
 	"time"
-	"xsession/pkg/container"
 )
 
 type Manager struct {

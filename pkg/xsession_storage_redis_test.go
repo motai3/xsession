@@ -3,10 +3,10 @@ package xsession_test
 import (
 	"context"
 	"github.com/go-redis/redis"
+	xsession "github.com/motai3/xsession/pkg"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
-	xsession "xsession/pkg"
 )
 
 func Test_StorageRedis(t *testing.T) {
